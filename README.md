@@ -1,5 +1,7 @@
 # F16_ai_pilot
 
+![BT Architecture](docs/images/bt_architecture.png)
+
 > Autonomous F-16 Air Combat Agent — Behavior Tree based tactical decision-making
 
 > 📦 **Archived coursework / competition project (Jul – Dec 2025).** Built for the Korea Aerospace University autonomous air combat competition. The repository was cleaned up and documented retroactively — source code preserved as-is. See [About this project](#about-this-project).
