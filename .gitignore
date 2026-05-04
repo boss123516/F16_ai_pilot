@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+venv/
+
+# DLL binaries (competition-provided, not redistributable)
+*.dll
+*.so.*
+
+# TacView logs (generated at runtime)
+*.acmi
+
+# JSBSim runtime outputs
+*.csv
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
