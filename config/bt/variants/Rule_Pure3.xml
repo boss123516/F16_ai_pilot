@@ -1,0 +1,72 @@
+<root main_tree_to_execute = "MainTree">
+
+
+  <BehaviorTree ID="MainTree">
+    <Sequence>
+       
+        <!-- EF 부분 트리-->
+        <Sequence>
+          <SelectTarget name="SelectTarget" BB="{BB}"/>
+          <DirectionVectorUpdate name="DirectionVectorUpdate" BB="{BB}"/>
+          <DistanceUpdate name="DistanceUpdateService" BB="{BB}"/>
+          <CheckSight name="CheckSight" BB="{BB}"/>          
+          <AngleOffUpdate name="AngleOffUpdate" BB="{BB}"/>
+          <AspectAngleUpdate name="AspectAngleUpdate" BB="{BB}"/>
+
+          <Fallback>
+
+            <Sequence>
+              <DECO_DistanceCheck name="DistanceCheck" UpDown="Greater"  Distance="2000" BB="{BB}"/>
+              <Fallback>
+
+                <Sequence>
+                  <DECO_AltitudeCheck name="AltitudeCheck" UpDown="Less" InputAlt="1500" BB="{BB}"/>
+                  <Task_Climb name="Task_Climb" ClimbAlt="500" BB="{BB}"/>
+                </Sequence>
+
+                <Sequence>
+                  <DECO_AltitudeCheck name="AltitudeCheck" UpDown="Greater" InputAlt="1500" BB="{BB}"/>
+                  <Task_Lead name="Task_Lead" close_dist="2000" far_dist="5000" min_throttle="0.65" max_throttle="1.0" slew_per_tick="0.05" use_smoothstep="true" BB="{BB}"/>
+                </Sequence>
+
+              </Fallback>
+            </Sequence>
+
+            <Sequence>
+              <DECO_DistanceCheck name="DistanceCheck" UpDown="Less"  Distance="2000" BB="{BB}"/>
+              <Fallback>
+
+                <Sequence>
+                  <DECO_AltitudeCheck name="AltitudeCheck" UpDown="Less" InputAlt="1500" BB="{BB}"/>
+                  <Task_Climb name="Task_Climb" ClimbAlt="500" BB="{BB}"/>
+                </Sequence>
+
+                <Sequence>
+                  <DECO_AltitudeCheck name="AltitudeCheck" UpDown="Greater" InputAlt="1500" BB="{BB}"/>
+                  <Fallback>
+                    <Sequence>
+                      <DECO_LOSTargetCheck name="DECO_LOSTargetCheck" UpDown="Less" InputLOS_Target="2" BB="{BB}"/>
+                      <DECO_LOSCheck name="DECO_LOSCheck" UpDown="Greater" InputLOS="3" BB="{BB}"/>
+                      <Task_DefensiveBreak name="Task_DefensiveBreak" BreakDist="800" SideOffset="300" KeepAltitude="true" VerticalJink="0" MaxThrottle="true" BB="{BB}"/>
+                    </Sequence>
+
+                    <Sequence>
+                      <DECO_LOSTargetCheck name="DECO_LOSTargetCheck" UpDown="Less" InputLOS_Target="2" BB="{BB}"/>
+                      <DECO_LOSCheck name="DECO_LOSCheck" UpDown="Less" InputLOS="3" BB="{BB}"/>
+                      <DECO_LOSCompare name="LOS_MineGreater" BB="{BB}"/>
+                      <Task_DefensiveBreak name="Task_DefensiveBreak" BreakDist="800" SideOffset="300" KeepAltitude="true" VerticalJink="0" MaxThrottle="true" BB="{BB}"/>
+                    </Sequence>
+
+                    <Task_Pure name="Task_Pure" BB="{BB}"/>
+                  </Fallback>
+
+                </Sequence>
+
+              </Fallback>
+
+            </Sequence>
+          </Fallback>
+        </Sequence>
+    </Sequence>
+  </BehaviorTree>
+</root>

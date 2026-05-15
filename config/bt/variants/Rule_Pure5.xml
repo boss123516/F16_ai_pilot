@@ -1,0 +1,83 @@
+<root main_tree_to_execute = "MainTree">
+
+
+  <BehaviorTree ID="MainTree">
+    <Sequence>
+       
+        <!-- EF 부분 트리-->
+        <Sequence>
+          <SelectTarget name="SelectTarget" BB="{BB}"/>
+          <DirectionVectorUpdate name="DirectionVectorUpdate" BB="{BB}"/>
+          <DistanceUpdate name="DistanceUpdateService" BB="{BB}"/>
+          <CheckSight name="CheckSight" BB="{BB}"/>          
+          <AngleOffUpdate name="AngleOffUpdate" BB="{BB}"/>
+          <AspectAngleUpdate name="AspectAngleUpdate" BB="{BB}"/>
+
+          <Fallback>
+
+            <Sequence>
+              <DECO_AltitudeCheck name="Alt_LT_1500_Guard" BB="{BB}" UpDown="Less" InputAlt="1500"/>
+              <Task_Climb name="Task_Climb" ClimbAlt="500" BB="{BB}"/>
+            </Sequence>
+
+            <Sequence>
+              <DECO_DistanceCheck name="Dist_LT_800_Evade" BB="{BB}" UpDown="Less" Distance="800"/>
+              <Fallback>
+                <Sequence>
+                  <DECO_LOSCompare name="MyLOS_GT_TgtLOS" BB="{BB}"/>
+                  <Task_DefensiveBreak name="Task_DefensiveBreak" BreakDist="800" SideOffset="300" KeepAltitude="true" VerticalJink="0" MaxThrottle="true" BB="{BB}"/>
+                </Sequence>
+                <Sequence>
+                  <DECO_LOSCheck name="MyLOS_GT_10" BB="{BB}" UpDown="Greater" InputLOS="10"/>
+                  <Task_DefensiveBreak name="Task_DefensiveBreak" BreakDist="800" SideOffset="300" KeepAltitude="true" VerticalJink="0" MaxThrottle="true" BB="{BB}"/>
+                </Sequence>
+              </Fallback>
+            </Sequence>
+
+            <Sequence>
+              <DECO_DistanceCheck name="Dist_LT_1500_Close" BB="{BB}" UpDown="Less" Distance="1500"/>
+              <Fallback>
+                <Sequence>
+                  <DECO_DistanceCheck name="Dist_LT_800_Snap" BB="{BB}" UpDown="Less" Distance="800"/>
+                  <DECO_LOSCheck name="MyLOS_LT_2_Snap" BB="{BB}" UpDown="Less" InputLOS="2"/>
+                  <Task_Pure name="Pure_Snapshot" BB="{BB}"/>
+                </Sequence>
+                <Task_Lag name="Lag_Close" BB="{BB}" LagDist="300" close_dist="800" far_dist="2000" min_throttle="0.65" max_throttle="1.0" slew_per_tick="0.05" use_smoothstep="true"/>
+              </Fallback>
+            </Sequence>
+
+            <Sequence>
+              <DECO_DistanceCheck name="Dist_GT_1500_Mid" BB="{BB}" UpDown="Greater" Distance="1500"/>
+              <DECO_DistanceCheck name="Dist_LT_3000_Mid" BB="{BB}" UpDown="Less" Distance="3000"/>
+              <Fallback>
+                <Sequence>
+                  <DECO_LOSCheck        name="MyLOS_LT_5_Mid"      BB="{BB}" UpDown="Less" InputLOS="5"/>
+                  <DECO_LOSTargetCheck  name="TgtLOS_LT_5_Mid"     BB="{BB}" UpDown="Less" InputLOS_Target="5"/>
+                  <Task_Lead name="Lead_Mid" BB="{BB}" LeadGain="0.5" MaxLeadTime="5.0" close_dist="1500" far_dist="5000" min_throttle="0.65" max_throttle="1.0" slew_per_tick="0.05" use_smoothstep="true"/>
+                </Sequence>
+                <Task_Pure name="Task_Pure" BB="{BB}"/>
+              </Fallback>
+            </Sequence>
+
+            <Sequence>
+              <DECO_DistanceCheck name="Dist_GT_3000_Far" BB="{BB}" UpDown="Greater" Distance="3000"/>
+              <Fallback>
+                <Sequence>
+                  <DECO_LOSCheck        name="MyLOS_LT_8_Far"    BB="{BB}" UpDown="Less" InputLOS="8"/>
+                  <DECO_LOSTargetCheck  name="TgtLOS_LT_8_Far"   BB="{BB}" UpDown="Less" InputLOS_Target="8"/>
+                  <Task_Lead name="Lead_Far" BB="{BB}" LeadGain="0.4" MaxLeadTime="4.0" close_dist="2000" far_dist="6000" min_throttle="0.65" max_throttle="1.0" slew_per_tick="0.05" use_smoothstep="true"/>
+                </Sequence>
+                <Task_Pure name="Task_Pure" BB="{BB}"/>
+              </Fallback>
+            </Sequence>
+          </Fallback>
+        </Sequence>
+    </Sequence>      
+  </BehaviorTree>
+</root>
+
+
+
+
+
+
